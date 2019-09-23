@@ -1,11 +1,10 @@
 import React from 'react';
+import AppBar from 'components/AppBar';
 
 function App() {
   return (
     <div>
-      <header>
-        <p>Hello world!</p>
-      </header>
+      <AppBar />
     </div>
   );
 }
