@@ -6,6 +6,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     height: 104,
     marginRight: 8,
+    textDecoration: 'none',
     width: 240,
   },
   name: {
