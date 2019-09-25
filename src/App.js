@@ -1,5 +1,4 @@
 import React from 'react';
-import Data from 'mockData';
 import AppBar from 'components/AppBar';
 import Category from 'components/Category';
 
