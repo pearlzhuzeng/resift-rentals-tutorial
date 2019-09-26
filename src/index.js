@@ -3,4 +3,16 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+// ReSift
+import { ResiftProvider } from 'resift';
+import dataService from './dataService';
+
+function WrappedApp() {
+  return (
+    <ResiftProvider dataService={dataService}>
+      <App />
+    </ResiftProvider>
+  );
+}
+
+ReactDOM.render(<WrappedApp />, document.getElementById('root'));
