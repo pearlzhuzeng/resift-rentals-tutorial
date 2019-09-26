@@ -1,13 +1,11 @@
-import { createHttpService, createDateService } from 'resift';
+import { createHttpService, createDataService } from 'resift';
 
 const http = createHttpService({
   prefix: '/api',
 });
 
-const services = { http };
-
-const dataService = createDateService({
-  services,
+const dataService = createDataService({
+  services: { http },
   onError: e => {
     throw e;
   },
