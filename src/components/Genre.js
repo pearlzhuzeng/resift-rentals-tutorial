@@ -1,6 +1,9 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+// Components
 import MovieThumbnail from 'components/MovieThumbnail';
+// Styles
+import { makeStyles } from '@material-ui/core/styles';
+import classNames from 'classnames';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -21,11 +24,11 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function Genre({ genre }) {
+function Genre({ className, genre }) {
   const classes = useStyles();
   const { name, movies } = genre;
   return (
-    <div className={classes.root}>
+    <div className={classNames(classes.root, className)}>
       <h2 className={classes.name}>{name}</h2>
       <div className={classes.movies}>
         {movies.map(movie => (

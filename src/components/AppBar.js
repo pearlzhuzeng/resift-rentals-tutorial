@@ -1,5 +1,7 @@
 import React from 'react';
+// Styles
 import { makeStyles } from '@material-ui/core/styles';
+import classNames from 'classnames';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -11,10 +13,10 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function AppBar() {
+function AppBar({ className }) {
   const classes = useStyles();
 
-  return <header className={classes.root}>ReSift Rentals</header>;
+  return <header className={classNames(classes.root, className)}>ReSift Rentals</header>;
 }
 
 export default AppBar;

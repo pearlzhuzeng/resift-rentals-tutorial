@@ -15,7 +15,7 @@ const genreList = Object.values(genreLookup).map(genre => ({
 function mockDelay() {
   return new Promise((resolve, reject) => {
     try {
-      setTimeout(resolve, 300);
+      setTimeout(resolve, 1000);
     } catch (e) {
       reject(e);
     }
