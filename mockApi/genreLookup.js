@@ -30,7 +30,7 @@ const genreMoviesLookup = genreAndMovieTuples.reduce((lookup, { genre, movie }) 
   return lookup;
 }, {});
 
-const normalizedGenreMoviesLookup = Object.entries(genreMoviesLookup).map(([genre, movies]) => ({
+const normalizedGenreMoviesTuples = Object.entries(genreMoviesLookup).map(([genre, movies]) => ({
   id: stringHash(genre),
   name: genre,
   movies: movies
@@ -42,7 +42,9 @@ const normalizedGenreMoviesLookup = Object.entries(genreMoviesLookup).map(([genr
     })),
 }));
 
-return normalizedGenreMoviesLookup.reduce((lookup, genre) => {
+const normalizedGenreMoviesLookup = normalizedGenreMoviesTuples.reduce((lookup, genre) => {
   lookup[genre.id] = genre;
   return lookup;
 }, {});
+
+export default normalizedGenreMoviesLookup;
