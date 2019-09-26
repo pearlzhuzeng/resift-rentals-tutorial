@@ -1,4 +1,6 @@
 import React from 'react';
+
+// Components
 import AppBar from 'components/AppBar';
 
 function App() {
