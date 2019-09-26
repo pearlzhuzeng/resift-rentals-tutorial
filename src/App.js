@@ -1,15 +1,17 @@
 import React from 'react';
+
+// ReSift
+import { ReSiftProvider } from 'resift';
+import dataService from './dataService';
+
+// Components
 import AppBar from 'components/AppBar';
-import Category from 'components/Category';
 
 function App() {
   return (
-    <div>
+    <ReSiftProvider dataService={dataService}>
       <AppBar />
-      {Data.map(category => (
-        <Category key={category.id} category={category} />
-      ))}
-    </div>
+    </ReSiftProvider>
   );
 }
 
