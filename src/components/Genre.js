@@ -21,9 +21,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function Category({ category }) {
+function Genre({ genre }) {
   const classes = useStyles();
-  const { name, movies } = category;
+  const { name, movies } = genre;
   return (
     <div className={classes.root}>
       <h2 className={classes.name}>{name}</h2>
@@ -36,4 +36,4 @@ function Category({ category }) {
   );
 }
 
-export default Category;
+export default Genre;
