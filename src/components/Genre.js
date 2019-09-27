@@ -8,16 +8,16 @@ import MovieThumbnail from 'components/MovieThumbnail';
 // Styles
 import { makeStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
+import { CircularProgress } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: 'black',
     height: 160,
-    margin: '8px 0',
     opacity: 0.5,
-    overflow: 'scroll',
     padding: 16,
     paddingTop: 4,
+    position: 'relative',
   },
   name: {
     color: 'white',
@@ -26,12 +26,21 @@ const useStyles = makeStyles(theme => ({
   movies: {
     display: 'flex',
     marginTop: 24,
+    overflow: 'auto',
+    '&::-webkit-scrollbar': {
+      display: 'none',
+    },
   },
   movie: {
     flex: '0 0 auto',
     marginRight: 8,
     width: 240,
     height: 104,
+  },
+  spinner: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
   },
 }));
 
