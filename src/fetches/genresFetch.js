@@ -4,13 +4,11 @@ const makeGenresFetch = defineFetch({
   displayName: 'Get Genres',
   make: () => ({
     key: [],
-    request: () => services => {
-      const { http } = services;
-      return http({
+    request: () => ({ http }) =>
+      http({
         method: 'GET',
         route: '/genres',
-      });
-    },
+      }),
   }),
 });
 
