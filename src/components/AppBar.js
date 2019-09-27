@@ -9,7 +9,6 @@ const useStyles = makeStyles(theme => ({
     color: 'white',
     fontWeight: 'bold',
     padding: 16,
-    width: '100%',
   },
 }));
 

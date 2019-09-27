@@ -7,18 +7,25 @@ const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: 'black',
     height: 160,
+    margin: '8px 0',
     opacity: 0.5,
+    overflow: 'scroll',
     padding: 16,
     paddingTop: 4,
-    margin: '8px 0',
+  },
+  name: {
+    color: 'white',
+    fontSize: 16,
   },
   movies: {
     display: 'flex',
     marginTop: 24,
   },
-  name: {
-    color: 'white',
-    fontSize: 16,
+  movie: {
+    flex: '0 0 auto',
+    marginRight: 8,
+    width: 240,
+    height: 104,
   },
 }));
 

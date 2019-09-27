@@ -4,11 +4,11 @@ import { useFetch, isLoading, isNormal } from 'resift';
 // Styles
 import { CircularProgress } from '@material-ui/core';
 
-function Loader({ children, fetch }) {
+function Loader({ children, className, fetch }) {
   const [data, status] = useFetch(fetch);
 
   return (
-    <div>
+    <div className={className}>
       {isLoading(status) && <CircularProgress />}
       {isNormal(status) && children(data)}
     </div>
