@@ -15,19 +15,22 @@ const genreList = Object.values(genreLookup).map(genre => ({
 function mockDelay() {
   return new Promise((resolve, reject) => {
     try {
-      setTimeout(resolve, 3000);
+      setTimeout(resolve, 1000);
     } catch (e) {
       reject(e);
     }
   });
 }
 
-export const genres = createHttpProxy('/genres', async ({ requestParams }) => {
-  await mockDelay();
-  return genreList;
-});
+export const genres = createHttpProxy(
+  { path: '/genres', exact: true },
+  async ({ requestParams }) => {
+    await mockDelay();
+    return genreList;
+  },
+);
 
-export const movies = createHttpProxy('/genre/:id/movies', async ({ requestParams, match }) => {
+export const movies = createHttpProxy('/genres/:id/movies', async ({ requestParams, match }) => {
   await mockDelay();
   const { id } = match.params;
   const genre = genreLookup[id];
