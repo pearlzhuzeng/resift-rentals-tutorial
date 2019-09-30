@@ -40,11 +40,6 @@ function Genre({ className, genre }) {
   const classes = useStyles();
   const { id, name } = genre;
   const moviesFetch = makeMoviesFetch(id);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(moviesFetch());
-  }, [moviesFetch, dispatch]);
 
   return (
     <div className={classNames(classes.root, className)}>

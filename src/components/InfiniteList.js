@@ -5,6 +5,7 @@ import { useFetch, isLoading, useDispatch, isNormal } from 'resift';
 import { makeStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 import { CircularProgress } from '@material-ui/core';
+import _get from 'lodash/get';
 
 const useStyles = makeStyles(theme => ({
   root: { position: 'relative' },
@@ -24,7 +25,7 @@ const useStyles = makeStyles(theme => ({
 function InfiniteList({ children, className, fetch }) {
   const classes = useStyles();
   // State
-  const [hitScrollEnd, setHitScrollEnd] = useState(false);
+  const [hitScrollEnd, setHitScrollEnd] = useState(true);
   // Fetches
   const [data, status] = useFetch(fetch);
   const dispatch = useDispatch();
@@ -38,6 +39,7 @@ function InfiniteList({ children, className, fetch }) {
 
     const { left } = scrollAnchor.getBoundingClientRect();
     const { width } = document.body.getBoundingClientRect();
+    console.log({ left, width, hitScrollEnd: width - left > 0 });
     setHitScrollEnd(width - left > 0);
   };
 
@@ -48,15 +50,21 @@ function InfiniteList({ children, className, fetch }) {
   useEffect(() => {
     const data = dataRef.current;
     if (!hitScrollEnd) return;
-    if (!data) return;
 
-    const { pageSize, currentPageNumber, totalNumberOfPages } = data.paginationMeta;
+    const defaultPaginationMeta = {
+      pageSize: 10,
+      currentPageNumber: 0,
+      totalNumberOfPages: Infinity,
+    };
+
+    const paginationMeta = _get(data, ['paginationMeta'], defaultPaginationMeta);
+    const { pageSize, currentPageNumber, totalNumberOfPages } = paginationMeta;
     if (currentPageNumber * pageSize >= totalNumberOfPages) return;
 
     dispatch(fetch(currentPageNumber + 1)).then(() => {
       handleScroll();
     });
-  }, [hitScrollEnd, dispatch, fetch]);
+  }, [hitScrollEnd, dispatch, fetch, data]);
 
   return (
     <div className={classNames(classes.root, className)} onScroll={handleScroll}>
