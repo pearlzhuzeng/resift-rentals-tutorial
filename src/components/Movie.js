@@ -1,13 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 // ReSift
 import { useDispatch } from 'resift';
 import makeMovieFetch from 'fetches/makeMovieFetch';
 // Styles
 import { makeStyles } from '@material-ui/core/styles';
-import { Drawer } from '@material-ui/core';
+import { Button, Drawer } from '@material-ui/core';
 // Components
 import Loader from 'components/Loader';
+import MovieForm from 'components/MovieForm';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -24,6 +25,13 @@ const useStyles = makeStyles(theme => ({
   },
   linkBack: {
     color: 'white',
+    marginRight: 16,
+  },
+  buttonEdit: {
+    border: 'solid 1px white',
+    color: 'white',
+    width: 'fit-content',
+    padding: 0,
   },
   movieHeader: {
     display: 'flex',
@@ -44,52 +52,66 @@ function Movie({ match }) {
   const { movieId: id } = match.params;
   const movieFetch = makeMovieFetch(id);
   const dispatch = useDispatch();
+  const [onEdit, setOnEdit] = useState(false);
 
   useEffect(() => {
     dispatch(movieFetch());
   }, [movieFetch, dispatch]);
 
+  const handleEdit = () => {
+    setOnEdit(true);
+  };
+
   return (
     <Drawer anchor="right" open={true} className={classes.root}>
       <Loader fetch={movieFetch}>
-        {({
-          name,
-          actors,
-          tomatoScore,
-          synopsis,
-          mpaaRating,
-          posterUrl,
-          genres,
-          runtime,
-          trailerUrl,
-        }) => (
-          <div className={classes.drawer}>
-            <Link className={classes.linkBack} to="/">
-              ⬅ Back
-            </Link>
-            <div className={classes.movieHeader}>
+        {movie => {
+          const {
+            name,
+            actors,
+            tomatoScore,
+            synopsis,
+            mpaaRating,
+            posterUrl,
+            genres,
+            runtime,
+            trailerUrl,
+          } = movie;
+          return (
+            <div className={classes.drawer}>
               <div>
-                <h1>{name}</h1>
-                <p className={classes.score}>
-                  {tomatoScore >= 60 ? '🍅 ' : '🤢 '}
-                  {tomatoScore}%
-                </p>
-                <p>
-                  <span>{mpaaRating}</span> | <span>{runtime}</span> |{' '}
-                </p>
-                <p>{genres.join(', ')}</p>
+                <Link className={classes.linkBack} to="/">
+                  ⬅ Back
+                </Link>
+                <Button className={classes.buttonEdit} onClick={handleEdit}>
+                  Edit
+                </Button>
               </div>
-              <img src={posterUrl} alt="poster" />
+              {onEdit && <MovieForm movie={movie} />}
+              <div className={classes.movieHeader}>
+                <div>
+                  <h1>{name}</h1>
+                  <p className={classes.score}>
+                    {tomatoScore >= 60 ? '🍅 ' : '🤢 '}
+                    {tomatoScore}%
+                  </p>
+                  <p>
+                    <span>{mpaaRating}</span> | <span>{runtime}</span> |{' '}
+                  </p>
+                  <p>{genres.join(', ')}</p>
+                </div>
+                <img src={posterUrl} alt="poster" />
+              </div>
+              <p>Staring: {actors.join(', ')}</p>
+              <p dangerouslySetInnerHTML={{ __html: synopsis }} />
+              <div>
+                <video className={classes.preview} controls>
+                  <source src={trailerUrl} type="video/mp4" />
+                </video>
+              </div>
             </div>
-            <p>Staring: {actors.join(', ')}</p>
-            <p dangerouslySetInnerHTML={{ __html: synopsis }} />
-            <div>
-              <video className={classes.preview} controls>
-                <source src={trailerUrl} type="video/mp4" />
-              </video>
-            </div>
-          </div>
-        )}
+          );
+        }}
       </Loader>
     </Drawer>
   );
