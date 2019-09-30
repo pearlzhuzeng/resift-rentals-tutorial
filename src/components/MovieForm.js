@@ -1,4 +1,9 @@
 import React, { useState } from 'react';
+import { useHistory, useRouteMatch } from 'react-router-dom';
+// Fetches
+import makeUpdateMovieFetch from 'fetches/makeUpdateMovieFetch';
+import { useDispatch } from 'resift';
+// Styles
 import {
   Button,
   Dialog,
@@ -16,7 +21,11 @@ const useStyles = makeStyles(theme => ({
 function MovieForm({ movie }) {
   const classes = useStyles();
   const [draftMovie, setDraftMovie] = useState(movie);
-  const { name, synopsis } = draftMovie;
+  const { id, name, synopsis } = draftMovie;
+  const updateMovieFetch = makeUpdateMovieFetch(id);
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const open = !!useRouteMatch('/movies/:movieId/edit'); // turn this into a boolean
 
   const handleChangeName = e => {
     setDraftMovie({ ...draftMovie, name: e.target.value });
@@ -26,12 +35,17 @@ function MovieForm({ movie }) {
     setDraftMovie({ ...draftMovie, synopsis: e.target.value });
   };
 
-  const handleCancel = () => {};
-  const handleSave = () => {};
+  const handleCancel = () => {
+    history.push(`/movies/${id}`);
+  };
+  const handleSave = async () => {
+    await dispatch(updateMovieFetch(draftMovie));
+    history.push(`/movies/${id}`);
+  };
 
   return (
     <div className={classes.root}>
-      <Dialog open={true} aria-labelledby="form-dialog-title">
+      <Dialog open={open} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Edit Movie Information</DialogTitle>
         <DialogContent>
           <form noValidate autoComplete="off">

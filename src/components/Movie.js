@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 // ReSift
 import { useDispatch } from 'resift';
 import makeMovieFetch from 'fetches/makeMovieFetch';
@@ -52,14 +52,14 @@ function Movie({ match }) {
   const { movieId: id } = match.params;
   const movieFetch = makeMovieFetch(id);
   const dispatch = useDispatch();
-  const [onEdit, setOnEdit] = useState(false);
+  const history = useHistory();
 
   useEffect(() => {
     dispatch(movieFetch());
   }, [movieFetch, dispatch]);
 
   const handleEdit = () => {
-    setOnEdit(true);
+    history.push(`/movies/${id}/edit`);
   };
 
   return (
@@ -87,7 +87,7 @@ function Movie({ match }) {
                   Edit
                 </Button>
               </div>
-              {onEdit && <MovieForm movie={movie} />}
+              <MovieForm movie={movie} />
               <div className={classes.movieHeader}>
                 <div>
                   <h1>{name}</h1>
