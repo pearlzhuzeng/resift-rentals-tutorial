@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 // ReSift
 import { useFetch, isLoading, useDispatch, isNormal } from 'resift';
 // Styles
@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 import { CircularProgress } from '@material-ui/core';
 import _get from 'lodash/get';
+import useDidDepsChange from './useDidDepsChange';
 
 const useStyles = makeStyles(theme => ({
   root: { position: 'relative' },
@@ -18,7 +19,6 @@ const useStyles = makeStyles(theme => ({
     position: 'absolute',
     top: 0,
     right: 0,
-    // transform: 'translate(-50%, -50%)',
   },
 }));
 
@@ -31,30 +31,23 @@ function InfiniteList({ children, className, fetch }) {
   const dispatch = useDispatch();
   // Ref
   const scrollAnchorRef = useRef(null);
-  const dataRef = useRef(data);
 
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     const scrollAnchor = scrollAnchorRef.current;
     if (!scrollAnchor) return;
 
     const { left } = scrollAnchor.getBoundingClientRect();
     const { width } = document.body.getBoundingClientRect();
-    console.log({ left, width, hitScrollEnd: width - left > 0 });
     setHitScrollEnd(width - left > 0);
-  };
-
-  useLayoutEffect(() => {
-    dataRef.current = data;
-  }, [data]);
+  }, []);
 
   useEffect(() => {
-    const data = dataRef.current;
     if (!hitScrollEnd) return;
 
     const defaultPaginationMeta = {
       pageSize: 10,
       currentPageNumber: 0,
-      totalNumberOfPages: Infinity,
+      totalNumberOfPages: 1,
     };
 
     const paginationMeta = _get(data, ['paginationMeta'], defaultPaginationMeta);
@@ -64,19 +57,17 @@ function InfiniteList({ children, className, fetch }) {
     dispatch(fetch(currentPageNumber + 1)).then(() => {
       handleScroll();
     });
-  }, [hitScrollEnd, dispatch, fetch, data]);
+  }, [hitScrollEnd, dispatch, fetch, data, handleScroll]);
+  useDidDepsChange({ hitScrollEnd, dispatch, fetch, data, handleScroll });
 
   return (
     <div className={classNames(classes.root, className)} onScroll={handleScroll}>
-      <div className={classes.content}>
-        {isNormal(status) && (
-          <>
-            {children(data)}
-            <div ref={scrollAnchorRef} />
-          </>
-        )}
-      </div>
       {isLoading(status) && <CircularProgress className={classes.spinner} />}
+      <div className={classes.content}>
+        {isNormal(status) && children(data)}
+        <div ref={scrollAnchorRef} />
+      </div>
+
       {/* This ref div needs to stay after the children, otherwise it will only re-fetch once*/}
     </div>
   );
