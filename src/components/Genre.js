@@ -13,7 +13,6 @@ const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: 'black',
     height: 160,
-    opacity: 0.5,
     padding: 16,
     paddingTop: 4,
   },
