@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useRouteMatch } from 'react-router-dom';
 // ReSift
 import { useDispatch } from 'resift';
 import makeMovieFetch from 'fetches/makeMovieFetch';
@@ -53,6 +53,7 @@ function Movie({ match }) {
   const movieFetch = makeMovieFetch(id);
   const dispatch = useDispatch();
   const history = useHistory();
+  const open = !!useRouteMatch('/movies/:movieId');
 
   useEffect(() => {
     dispatch(movieFetch());
@@ -63,7 +64,7 @@ function Movie({ match }) {
   };
 
   return (
-    <Drawer anchor="right" open={true} className={classes.root}>
+    <Drawer anchor="right" open={open} className={classes.root}>
       <Loader fetch={movieFetch}>
         {movie => {
           const {
