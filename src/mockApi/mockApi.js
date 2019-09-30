@@ -54,6 +54,17 @@ export const movies = createHttpProxy('/genres/:id/movies', async ({ requestPara
 
 export const movie = createHttpProxy('/movies/:id', async ({ requestParams, match }) => {
   await mockDelay();
-  const { id } = match.params;
-  return movieLookup[id];
+
+  if (requestParams.method === 'PUT') {
+    const { id } = match.params;
+    movieLookup[id] = requestParams.data;
+    return movieLookup[id];
+  }
+
+  if (requestParams.method === 'GET') {
+    const { id } = match.params;
+    return movieLookup[id];
+  }
+
+  throw new Error('no matching verb');
 });
