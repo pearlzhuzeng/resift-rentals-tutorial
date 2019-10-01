@@ -2,8 +2,9 @@ import { defineFetch } from 'resift';
 import _get from 'lodash/get';
 
 const makeMoviesFetch = defineFetch({
-  displayName: 'Get Movies',
+  displayName: 'Get Movies from Genre',
   share: {
+    namespace: 'moviesOfGenre',
     merge: (previous, response) => {
       if (!previous) return response;
 
