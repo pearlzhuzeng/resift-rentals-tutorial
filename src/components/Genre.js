@@ -13,7 +13,6 @@ const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: 'black',
     height: 160,
-    opacity: 0.5,
     padding: 16,
     paddingTop: 4,
   },
@@ -34,6 +33,11 @@ const useStyles = makeStyles(theme => ({
     marginRight: 8,
     width: 240,
     height: 104,
+    opacity: 0.8,
+    transition: 'all 0.5s ease-out',
+    '&:hover': {
+      opacity: 1,
+    },
   },
 }));
 
