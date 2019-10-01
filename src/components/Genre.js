@@ -5,6 +5,8 @@ import makeMoviesFetch from 'fetches/makeMoviesFetch';
 // Components
 import InfiniteList from 'components/InfiniteList';
 import MovieThumbnail from 'components/MovieThumbnail';
+// Helpers
+import _range from 'lodash/range';
 // Styles
 import { makeStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
@@ -48,7 +50,18 @@ function Genre({ className, genre }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(moviesFetch());
+    const { width } = document.body.getBoundingClientRect();
+    const numberOfItemsToFetch = width / (240 + 8);
+    const numberOfPagesToFetchTill = Math.ceil(numberOfItemsToFetch / 10);
+    const pages = _range(numberOfPagesToFetchTill);
+    pages.forEach(async page => {
+      if (page === 0) {
+        dispatch(moviesFetch(page));
+      } else {
+        await dispatch(moviesFetch(page - 1));
+        dispatch(moviesFetch(page));
+      }
+    });
   }, [moviesFetch, dispatch]);
 
   return (
