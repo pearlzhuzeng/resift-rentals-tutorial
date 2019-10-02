@@ -68,7 +68,7 @@ function Movie({ match }) {
   };
 
   return (
-    <Drawer anchor="right" open={open} className={classes.root}>
+    <Drawer anchor="right" open={open} className={classes.root} onClose={() => history.push('/')}>
       <Loader fetch={movieFetch}>
         {movie => {
           const {
