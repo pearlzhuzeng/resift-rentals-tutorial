@@ -19,8 +19,6 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     width: 600,
     padding: 16,
-    backgroundColor: '#555',
-    color: 'white',
     height: '100vh',
   },
   linkBack: {
