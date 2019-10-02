@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 // Fetches
 import { useDispatch } from 'resift';
 import makeMoviesFetch from 'fetches/makeMoviesFetch';
@@ -10,6 +10,7 @@ import _range from 'lodash/range';
 // Styles
 import { makeStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
+import { CircularProgress } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -41,6 +42,9 @@ const useStyles = makeStyles(theme => ({
       opacity: 1,
     },
   },
+  initialSpinner: {
+    color: 'white',
+  },
 }));
 
 function Genre({ className, genre }) {
@@ -48,25 +52,32 @@ function Genre({ className, genre }) {
   const { id, name } = genre;
   const moviesFetch = makeMoviesFetch(id);
   const dispatch = useDispatch();
+  const [displayInitialSpinner, setDisplayInitialSpinner] = useState(true);
 
   useEffect(() => {
     const { width } = document.body.getBoundingClientRect();
     const numberOfItemsToFetch = width / (240 + 8);
     const numberOfPagesToFetchTill = Math.ceil(numberOfItemsToFetch / 10);
     const pages = _range(numberOfPagesToFetchTill);
-    pages.forEach(async page => {
-      if (page === 0) {
-        dispatch(moviesFetch(page));
-      } else {
-        await dispatch(moviesFetch(page - 1));
-        dispatch(moviesFetch(page));
+
+    (async () => {
+      for (const page of pages) {
+        await dispatch(moviesFetch(page));
+        if (page === 0) {
+          setDisplayInitialSpinner(false);
+        }
       }
-    });
+    })();
   }, [moviesFetch, dispatch]);
 
   return (
     <div className={classNames(classes.root, className)}>
       <h2 className={classes.name}>{name}</h2>
+      {displayInitialSpinner && (
+        <div className={classes.movies}>
+          <CircularProgress className={classes.initialSpinner} />
+        </div>
+      )}
       <InfiniteList className={classes.movies} fetch={moviesFetch}>
         {movies =>
           movies.results.map(movie => (

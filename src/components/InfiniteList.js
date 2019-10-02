@@ -8,6 +8,15 @@ import { CircularProgress } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   root: {},
+  spinnerContainer: {
+    width: '100%',
+    position: 'relative',
+  },
+  spinner: {
+    color: 'white',
+    position: 'absolute',
+    top: '20%',
+  },
 }));
 
 function InfiniteList({ children, className, fetch }) {
@@ -49,10 +58,14 @@ function InfiniteList({ children, className, fetch }) {
 
   return (
     <div className={classNames(classes.root, className)} onScroll={handleScroll}>
-      {isLoading(status) && <CircularProgress />}
       {isNormal(status) && children(data)}
       <div ref={scrollAnchorRef} />
       {/* This ref div needs to stay after the children, otherwise it will only re-fetch once*/}
+      {isLoading(status) && (
+        <div className={classes.spinnerContainer}>
+          <CircularProgress className={classes.spinner} />
+        </div>
+      )}
     </div>
   );
 }
