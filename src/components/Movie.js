@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, useHistory, useRouteMatch } from 'react-router-dom';
 // ReSift
-import { useDispatch } from 'resift';
+import { useDispatch, useFetch } from 'resift';
 import makeMovieFetch from 'fetches/makeMovieFetch';
 // Styles
 import { makeStyles } from '@material-ui/core/styles';
@@ -54,10 +54,14 @@ function Movie({ match }) {
   const dispatch = useDispatch();
   const history = useHistory();
   const open = !!useRouteMatch('/movies/:movieId');
+  const [movie] = useFetch(movieFetch);
 
   useEffect(() => {
+    // Don't fetch if the data is already there
+    if (movie) return;
+
     dispatch(movieFetch());
-  }, [movieFetch, dispatch]);
+  }, [movieFetch, dispatch, movie]);
 
   const handleEdit = () => {
     history.push(`/movies/${id}/edit`);
