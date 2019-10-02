@@ -21,6 +21,9 @@ const useStyles = makeStyles(theme => ({
     padding: 16,
     height: '100vh',
   },
+  paper: {
+    minWidth: 700,
+  },
   linkBack: {
     color: 'white',
     marginRight: 16,
@@ -66,7 +69,13 @@ function Movie({ match }) {
   };
 
   return (
-    <Drawer anchor="right" open={open} className={classes.root} onClose={() => history.push('/')}>
+    <Drawer
+      anchor="right"
+      open={open}
+      className={classes.root}
+      classes={{ paper: classes.paper }}
+      onClose={() => history.push('/')}
+    >
       <Loader fetch={movieFetch}>
         {movie => {
           const {
