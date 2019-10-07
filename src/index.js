@@ -6,6 +6,8 @@ import App from './App';
 // ReSift
 import { ResiftProvider } from 'resift';
 import dataService from './dataService';
+
+// Styles
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 const theme = createMuiTheme({
   palette: {
