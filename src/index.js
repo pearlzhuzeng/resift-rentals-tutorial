@@ -3,4 +3,19 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+const theme = createMuiTheme({
+  palette: {
+    type: 'dark',
+  },
+});
+
+function WrappedApp() {
+  return (
+    <MuiThemeProvider theme={theme}>
+      <App />
+    </MuiThemeProvider>
+  );
+}
+
+ReactDOM.render(<WrappedApp />, document.getElementById('root'));
