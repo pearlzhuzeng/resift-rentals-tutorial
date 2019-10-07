@@ -6,11 +6,19 @@ import App from './App';
 // ReSift
 import { ResiftProvider } from 'resift';
 import dataService from './dataService';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+const theme = createMuiTheme({
+  palette: {
+    type: 'dark',
+  },
+});
 
 function WrappedApp() {
   return (
     <ResiftProvider dataService={dataService}>
-      <App />
+      <MuiThemeProvider theme={theme}>
+        <App />
+      </MuiThemeProvider>
     </ResiftProvider>
   );
 }

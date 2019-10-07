@@ -7,8 +7,20 @@ import Genre from 'components/Genre';
 import { useDispatch } from 'resift';
 // Fetches
 import genresFetch from 'fetches/genresFetch';
+// Styles
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles(theme => ({
+  root: {},
+  genre: {
+    margin: '8px 0',
+  },
+}));
+
 function App() {
+  const classes = useStyles();
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(genresFetch());
   }, [dispatch]);
@@ -16,7 +28,9 @@ function App() {
     <>
       <AppBar />
       <Loader fetch={genresFetch}>
-        {genres => genres.map(genre => <Genre key={genre.id} genre={genre} />)}
+        {genres =>
+          genres.map(genre => <Genre key={genre.id} genre={genre} className={classes.genre} />)
+        }
       </Loader>
     </>
   );

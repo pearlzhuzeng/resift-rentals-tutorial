@@ -7,10 +7,8 @@ const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: 'black',
     height: 160,
-    opacity: 0.5,
     padding: 16,
     paddingTop: 4,
-    margin: '8px 0',
   },
   movies: {
     display: 'flex',
