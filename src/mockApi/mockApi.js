@@ -22,12 +22,15 @@ function mockDelay() {
   });
 }
 
-export const genres = createHttpProxy('/genres', async ({ requestParams }) => {
-  await mockDelay();
-  return genreList;
-});
+export const genres = createHttpProxy(
+  { path: '/genres', exact: true },
+  async ({ requestParams }) => {
+    await mockDelay();
+    return genreList;
+  },
+);
 
-export const movies = createHttpProxy('/genre/:id/movies', async ({ requestParams, match }) => {
+export const movies = createHttpProxy('/genres/:id/movies', async ({ requestParams, match }) => {
   await mockDelay();
   const { id } = match.params;
   const genre = genreLookup[id];
@@ -51,6 +54,17 @@ export const movies = createHttpProxy('/genre/:id/movies', async ({ requestParam
 
 export const movie = createHttpProxy('/movies/:id', async ({ requestParams, match }) => {
   await mockDelay();
-  const { id } = match.params;
-  return movieLookup[id];
+
+  if (requestParams.method === 'PUT') {
+    const { id } = match.params;
+    movieLookup[id] = requestParams.data;
+    return movieLookup[id];
+  }
+
+  if (requestParams.method === 'GET') {
+    const { id } = match.params;
+    return movieLookup[id];
+  }
+
+  throw new Error('no matching verb');
 });
