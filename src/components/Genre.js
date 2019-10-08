@@ -1,9 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 // Fetches
-import { useDispatch, useFetch, isLoading, isNormal } from 'resift';
+import { useDispatch } from 'resift';
 import makeMoviesFetch from 'fetches/makeMoviesFetch';
 // Components
 import MovieThumbnail from 'components/MovieThumbnail';
+import InfiniteList from 'components/helpers/InfiniteList';
+// Helpers
+import _range from 'lodash/range';
 // Styles
 import { makeStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
@@ -48,23 +51,40 @@ function Genre({ className, genre }) {
   const classes = useStyles();
   const { id, name } = genre;
   const moviesFetch = makeMoviesFetch(id);
-  const [movies, status] = useFetch(moviesFetch);
   const dispatch = useDispatch();
+  const [displayInitialSpinner, setDisplayInitialSpinner] = useState(true);
 
   useEffect(() => {
-    dispatch(moviesFetch());
-  }, [dispatch, moviesFetch, id]);
+    const { width } = document.body.getBoundingClientRect();
+    const numberOfItemsToFetch = width / (240 + 8);
+    const numberOfPagesToFetchTill = Math.ceil(numberOfItemsToFetch / 10);
+    const pages = _range(numberOfPagesToFetchTill);
+
+    (async () => {
+      for (const page of pages) {
+        await dispatch(moviesFetch(page));
+        if (page === 0) {
+          setDisplayInitialSpinner(false);
+        }
+      }
+    })();
+  }, [moviesFetch, dispatch]);
 
   return (
     <div className={classNames(classes.root, className)}>
       <h2 className={classes.name}>{name}</h2>
-      <div className={classes.movies}>
-        {isLoading(status) && <CircularProgress className={classes.spinner} />}
-        {isNormal(status) &&
+      {displayInitialSpinner && (
+        <div className={classes.movies}>
+          <CircularProgress className={classes.spinner} />
+        </div>
+      )}
+      <InfiniteList className={classes.movies} fetch={moviesFetch}>
+        {movies =>
           movies.results.map(movie => (
             <MovieThumbnail key={movie.id} className={classes.movie} movie={movie} />
-          ))}
-      </div>
+          ))
+        }
+      </InfiniteList>
     </div>
   );
 }
