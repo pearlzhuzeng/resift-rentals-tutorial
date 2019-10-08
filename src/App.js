@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 // Components
 import AppBar from 'components/AppBar';
 import Genre from 'components/Genre';
+import MovieDrawer from 'components/MovieDrawer';
 // ReSift
 import { useDispatch, useFetch, isNormal, isLoading } from 'resift';
 // Fetches
@@ -29,12 +31,13 @@ function App() {
     dispatch(genresFetch());
   }, [dispatch]);
   return (
-    <>
+    <Router>
       <AppBar />
       {isLoading(status) && <CircularProgress className={classes.spinner} />}
       {isNormal(status) &&
         genres.map(genre => <Genre key={genre.id} genre={genre} className={classes.genre} />)}
-    </>
+      <Route path="/movies/:movieId" component={MovieDrawer} />
+    </Router>
   );
 }
 export default App;

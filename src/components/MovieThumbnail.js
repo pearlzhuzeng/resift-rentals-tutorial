@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 // Styles
 import { makeStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
@@ -19,18 +20,19 @@ const useStyles = makeStyles(theme => ({
 
 function MovieThumbnail({ className, movie }) {
   const classes = useStyles();
-  const { name, imageUrl } = movie;
+  const { id, name, imageUrl } = movie;
 
   return (
-    <div
+    <Link
       className={classNames(classes.root, className)}
+      to={`/movies/${id}`}
       style={{
         backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.9)), url(${imageUrl})`,
         backgroundSize: 'cover',
       }}
     >
       <h3 className={classes.name}>{name}</h3>
-    </div>
+    </Link>
   );
 }
 
