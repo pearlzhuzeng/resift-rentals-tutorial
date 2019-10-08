@@ -6,10 +6,7 @@ import classNames from 'classnames';
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
-    height: 104,
-    marginRight: 8,
     textDecoration: 'none',
-    width: 240,
   },
   name: {
     alignSelf: 'flex-end',
@@ -28,7 +25,7 @@ function MovieThumbnail({ className, movie }) {
     <div
       className={classNames(classes.root, className)}
       style={{
-        backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.9)), url(${imageUrl})`,
+        backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.9)), url(${imageUrl})`,
         backgroundSize: 'cover',
       }}
     >
