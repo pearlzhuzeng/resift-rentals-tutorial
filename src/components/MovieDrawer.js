@@ -3,9 +3,11 @@ import { Link, useHistory, useRouteMatch } from 'react-router-dom';
 // Fetches
 import { useDispatch, useFetch, isLoading, isNormal } from 'resift';
 import makeMovieFetch from 'fetches/makeMovieFetch';
+// Components
+import MovieForm from 'components/MovieForm';
 // Styles
 import { makeStyles } from '@material-ui/core/styles';
-import { Drawer, CircularProgress } from '@material-ui/core';
+import { Button, Drawer, CircularProgress } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -48,7 +50,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function Movie({ match }) {
+function MovieDrawer({ match }) {
   const classes = useStyles();
   const { movieId: id } = match.params;
   const movieFetch = makeMovieFetch(id);
@@ -63,6 +65,10 @@ function Movie({ match }) {
 
     dispatch(movieFetch());
   }, [movieFetch, dispatch, movie]);
+
+  const handleEdit = () => {
+    history.push(`/movies/${id}/edit`);
+  };
 
   return (
     <Drawer
@@ -80,6 +86,10 @@ function Movie({ match }) {
               <Link className={classes.linkBack} to="/">
                 ⬅ Back
               </Link>
+              <Button className={classes.buttonEdit} onClick={handleEdit}>
+                Edit
+              </Button>
+              <MovieForm movie={movie} />
             </div>
             <div className={classes.movieHeader}>
               <div>
@@ -109,4 +119,4 @@ function Movie({ match }) {
   );
 }
 
-export default Movie;
+export default MovieDrawer;
