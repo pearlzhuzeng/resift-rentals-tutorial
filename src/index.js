@@ -9,6 +9,7 @@ import dataService from './dataService';
 
 // Styles
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { CssBaseline } from '@material-ui/core';
 const theme = createMuiTheme({
   palette: {
     type: 'dark',
@@ -18,6 +19,7 @@ const theme = createMuiTheme({
 function WrappedApp() {
   return (
     <ResiftProvider dataService={dataService}>
+      <CssBaseline />
       <MuiThemeProvider theme={theme}>
         <App />
       </MuiThemeProvider>
