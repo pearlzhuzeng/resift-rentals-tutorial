@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 // Fetches
 import makeUpdateMovie from 'fetches/makeUpdateMovie';
-import { useDispatch } from 'resift';
-
+import { useDispatch, isLoading, useStatus } from 'resift';
 // Styles
 import {
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -25,7 +25,8 @@ function MovieForm({ movie }) {
   const { id, name, synopsis } = draftMovie;
   const open = !!useRouteMatch('/movies/:movieId/edit');
   const history = useHistory();
-  const updateMovieFetch = makeUpdateMovie(id);
+  const updateMovie = makeUpdateMovie(id);
+  const status = useStatus(updateMovie);
   const dispatch = useDispatch();
 
   const handleChangeName = e => {
@@ -42,7 +43,7 @@ function MovieForm({ movie }) {
   };
 
   const handleSave = async () => {
-    await dispatch(updateMovieFetch(draftMovie));
+    await dispatch(updateMovie(draftMovie));
     history.push(`/movies/${id}`);
   };
 
@@ -74,7 +75,7 @@ function MovieForm({ movie }) {
         <DialogActions>
           <Button onClick={handleCancel}>Cancel</Button>
           <Button variant="outlined" onClick={handleSave}>
-            Save
+            {isLoading(status) ? <CircularProgress size={24} color="inherit" /> : 'Save'}
           </Button>
         </DialogActions>
       </Dialog>

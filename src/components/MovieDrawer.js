@@ -12,6 +12,7 @@ import { Button, Drawer, CircularProgress } from '@material-ui/core';
 const useStyles = makeStyles(theme => ({
   root: {
     padding: 20,
+    position: 'relative',
   },
   drawer: {
     display: 'flex',
@@ -47,6 +48,9 @@ const useStyles = makeStyles(theme => ({
   },
   spinner: {
     color: 'white',
+    position: 'absolute',
+    left: '45%',
+    top: '45%',
   },
 }));
 
