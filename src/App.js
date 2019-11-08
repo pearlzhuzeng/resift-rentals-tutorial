@@ -1,19 +1,21 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 // Components
 import AppBar from 'components/AppBar';
 import Genre from 'components/Genre';
 import MovieDrawer from 'components/MovieDrawer';
 // ReSift
-import { useDispatch, useFetch, isNormal, isLoading } from 'resift';
+import { Guard, useDispatch, isLoading, useStatus } from 'resift';
 // Fetches
-import genresFetch from 'fetches/genresFetch';
+import getGenres from 'fetches/getGenres';
 // Styles
 import { makeStyles } from '@material-ui/core/styles';
 import { CircularProgress } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
-  root: {},
+  root: {
+    backgroundColor: '#212121',
+  },
   genre: {
     margin: '8px 0',
   },
@@ -25,18 +27,21 @@ const useStyles = makeStyles(theme => ({
 function App() {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const [genres, status] = useFetch(genresFetch);
+  const status = useStatus(getGenres);
 
   useEffect(() => {
-    dispatch(genresFetch());
+    dispatch(getGenres());
   }, [dispatch]);
   return (
     <Router>
       <AppBar />
       {isLoading(status) && <CircularProgress className={classes.spinner} />}
-      {isNormal(status) &&
-        genres.map(genre => <Genre key={genre.id} genre={genre} className={classes.genre} />)}
-      <Route path="/movies/:movieId" component={MovieDrawer} />
+      <Guard fetch={getGenres}>
+        {genres =>
+          genres.map(genre => <Genre key={genre.id} genre={genre} className={classes.genre} />)
+        }
+      </Guard>
+      <MovieDrawer />
     </Router>
   );
 }

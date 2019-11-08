@@ -1,20 +1,16 @@
 import React, { useEffect, useState } from 'react';
 // Fetches
-import { useDispatch } from 'resift';
-import makeMoviesFetch from 'fetches/makeMoviesFetch';
+import { Guard, useDispatch, useData, useStatus, isLoading } from 'resift';
+import makeGetMovies from 'fetches/makeGetMovies';
 // Components
 import MovieThumbnail from 'components/MovieThumbnail';
-import InfiniteList from 'components/helpers/InfiniteList';
-// Helpers
-import _range from 'lodash/range';
 // Styles
 import { makeStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
-import { CircularProgress } from '@material-ui/core';
+import { Button, CircularProgress } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    backgroundColor: 'black',
     height: 160,
     padding: 16,
     paddingTop: 4,
@@ -23,9 +19,6 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     marginTop: 24,
     overflow: 'auto',
-    '&::-webkit-scrollbar': {
-      display: 'none',
-    },
   },
   name: {
     color: 'white',
@@ -42,6 +35,12 @@ const useStyles = makeStyles(theme => ({
       opacity: 1,
     },
   },
+  loadMoreContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    color: 'white',
+  },
   spinner: {
     color: 'white',
   },
@@ -50,41 +49,48 @@ const useStyles = makeStyles(theme => ({
 function Genre({ className, genre }) {
   const classes = useStyles();
   const { id, name } = genre;
-  const moviesFetch = makeMoviesFetch(id);
+  const getMovies = makeGetMovies(id);
+  const movies = useData(getMovies);
+  const status = useStatus(getMovies);
   const dispatch = useDispatch();
-  const [displayInitialSpinner, setDisplayInitialSpinner] = useState(true);
+  const [isEnd, setIsEnd] = useState(false);
 
   useEffect(() => {
-    const { width } = document.body.getBoundingClientRect();
-    const numberOfItemsToFetch = width / (240 + 8);
-    const numberOfPagesToFetchTill = Math.ceil(numberOfItemsToFetch / 10);
-    const pages = _range(numberOfPagesToFetchTill);
+    dispatch(getMovies(0));
+  }, [getMovies, dispatch]);
 
-    (async () => {
-      for (const page of pages) {
-        await dispatch(moviesFetch(page));
-        if (page === 0) {
-          setDisplayInitialSpinner(false);
-        }
-      }
-    })();
-  }, [moviesFetch, dispatch]);
+  const handleLoadMore = () => {
+    const { pageSize, currentPageNumber, totalNumberOfPages } = movies.paginationMeta;
+    if ((currentPageNumber + 1) * pageSize >= totalNumberOfPages) {
+      setIsEnd(true);
+    }
+
+    dispatch(getMovies(currentPageNumber + 1));
+  };
 
   return (
     <div className={classNames(classes.root, className)}>
       <h2 className={classes.name}>{name}</h2>
-      {displayInitialSpinner && (
-        <div className={classes.movies}>
-          <CircularProgress className={classes.spinner} />
+      <div className={classes.movies}>
+        <Guard fetch={getMovies}>
+          {movies =>
+            movies.results.map(movie => (
+              <MovieThumbnail key={movie.id} className={classes.movie} movie={movie} />
+            ))
+          }
+        </Guard>
+        <div className={classes.loadMoreContainer}>
+          <Button onClick={handleLoadMore} disabled={isLoading(status) || isEnd}>
+            {isLoading(status) ? (
+              <CircularProgress className={classes.spinner} />
+            ) : isEnd ? (
+              'end'
+            ) : (
+              'more'
+            )}
+          </Button>
         </div>
-      )}
-      <InfiniteList className={classes.movies} fetch={moviesFetch}>
-        {movies =>
-          movies.results.map(movie => (
-            <MovieThumbnail key={movie.id} className={classes.movie} movie={movie} />
-          ))
-        }
-      </InfiniteList>
+      </div>
     </div>
   );
 }

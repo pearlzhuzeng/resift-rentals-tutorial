@@ -1,21 +1,22 @@
 import { defineFetch } from 'resift';
 import _get from 'lodash/get';
 
-const makeMoviesFetch = defineFetch({
+const makeGetMovies = defineFetch({
   displayName: 'Get Movies from Genre',
   share: {
     namespace: 'moviesOfGenre',
-    merge: (previous, response) => {
-      if (!previous) return response;
+    merge: {
+      moviesOfGenre: (previous, response) => {
+        if (!previous) return response;
 
-      return {
-        results: [..._get(previous, ['results'], []), ..._get(response, ['results'], [])],
-        paginationMeta: response.paginationMeta,
-      };
+        return {
+          results: [..._get(previous, ['results'], []), ..._get(response, ['results'], [])],
+          paginationMeta: response.paginationMeta,
+        };
+      },
     },
   },
   make: genreId => ({
-    key: [genreId],
     request: page => ({ http }) =>
       http({
         method: 'GET',
@@ -28,4 +29,4 @@ const makeMoviesFetch = defineFetch({
   }),
 });
 
-export default makeMoviesFetch;
+export default makeGetMovies;

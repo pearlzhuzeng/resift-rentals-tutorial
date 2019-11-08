@@ -1,9 +1,8 @@
 import { defineFetch } from 'resift';
 
-const makeGenresFetch = defineFetch({
+const makeGetGenres = defineFetch({
   displayName: 'Get Genres',
   make: () => ({
-    key: [],
     request: () => ({ http }) =>
       http({
         method: 'GET',
@@ -12,6 +11,6 @@ const makeGenresFetch = defineFetch({
   }),
 });
 
-const genresFetch = makeGenresFetch();
+const getGenres = makeGetGenres();
 
-export default genresFetch;
+export default getGenres;

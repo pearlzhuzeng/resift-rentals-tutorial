@@ -1,12 +1,11 @@
 import { defineFetch } from 'resift';
 
-const makeMovieFetch = defineFetch({
+const makeGetMovie = defineFetch({
   displayName: 'Get Movie',
   share: {
     namespace: 'movie',
   },
   make: movieId => ({
-    key: [movieId],
     request: () => ({ http }) =>
       http({
         method: 'GET',
@@ -14,4 +13,4 @@ const makeMovieFetch = defineFetch({
       }),
   }),
 });
-export default makeMovieFetch;
+export default makeGetMovie;

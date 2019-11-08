@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { Link, useHistory, useRouteMatch } from 'react-router-dom';
 // Fetches
-import { useDispatch, useFetch, isLoading, isNormal } from 'resift';
-import makeMovieFetch from 'fetches/makeMovieFetch';
+import { Guard, useDispatch, useStatus, isLoading, isNormal } from 'resift';
+import makeGetMovie from 'fetches/makeGetMovie';
 // Components
 import MovieForm from 'components/MovieForm';
 // Styles
@@ -50,21 +50,23 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function MovieDrawer({ match }) {
+function MovieDrawer() {
   const classes = useStyles();
-  const { movieId: id } = match.params;
-  const movieFetch = makeMovieFetch(id);
+  const match = useRouteMatch('/movies/:id');
+  const id = match && match.params.id;
+  const open = !!match;
+  const getMovie = id && makeGetMovie(id);
   const dispatch = useDispatch();
   const history = useHistory();
-  const open = !!useRouteMatch('/movies/:movieId');
-  const [movie, status] = useFetch(movieFetch);
+  const status = useStatus(getMovie);
 
   useEffect(() => {
     // Don't fetch if the data is already there
-    if (movie) return;
+    if (!getMovie) return;
+    if (isNormal(status)) return;
 
-    dispatch(movieFetch());
-  }, [movieFetch, dispatch, movie]);
+    dispatch(getMovie());
+  }, [getMovie, dispatch, status]);
 
   const handleEdit = () => {
     history.push(`/movies/${id}/edit`);
@@ -80,40 +82,42 @@ function MovieDrawer({ match }) {
     >
       <div className={classes.drawer}>
         {isLoading(status) && <CircularProgress className={classes.spinner} />}
-        {isNormal(status) && (
-          <>
-            <div>
-              <Link className={classes.linkBack} to="/">
-                ⬅ Back
-              </Link>
-              <Button className={classes.buttonEdit} onClick={handleEdit}>
-                Edit
-              </Button>
-              <MovieForm movie={movie} />
-            </div>
-            <div className={classes.movieHeader}>
+        <Guard fetch={getMovie}>
+          {movie => (
+            <>
               <div>
-                <h1>{movie.name}</h1>
-                <p className={classes.score}>
-                  {movie.tomatoScore >= 60 ? '🍅 ' : '🤢 '}
-                  {movie.tomatoScore}%
-                </p>
-                <p>
-                  <span>{movie.mpaaRating}</span> | <span>{movie.runtime}</span> |{' '}
-                </p>
-                <p>{movie.genres.join(', ')}</p>
+                <Link className={classes.linkBack} to="/">
+                  ⬅ Back
+                </Link>
+                <Button className={classes.buttonEdit} onClick={handleEdit}>
+                  Edit
+                </Button>
+                <MovieForm movie={movie} />
               </div>
-              <img src={movie.posterUrl} alt="poster" />
-            </div>
-            <p>Staring: {movie.actors.join(', ')}</p>
-            <p dangerouslySetInnerHTML={{ __html: movie.synopsis }} />
-            <div>
-              <video className={classes.preview} controls>
-                <source src={movie.trailerUrl} type="video/mp4" />
-              </video>
-            </div>
-          </>
-        )}
+              <div className={classes.movieHeader}>
+                <div>
+                  <h1>{movie.name}</h1>
+                  <p className={classes.score}>
+                    {movie.tomatoScore >= 60 ? '🍅 ' : '🤢 '}
+                    {movie.tomatoScore}%
+                  </p>
+                  <p>
+                    <span>{movie.mpaaRating}</span> | <span>{movie.runtime}</span> |{' '}
+                  </p>
+                  <p>{movie.genres.join(', ')}</p>
+                </div>
+                <img src={movie.posterUrl} alt="poster" />
+              </div>
+              <p>Staring: {movie.actors.join(', ')}</p>
+              <p dangerouslySetInnerHTML={{ __html: movie.synopsis }} />
+              <div>
+                <video className={classes.preview} controls>
+                  <source src={movie.trailerUrl} type="video/mp4" />
+                </video>
+              </div>
+            </>
+          )}
+        </Guard>
       </div>
     </Drawer>
   );

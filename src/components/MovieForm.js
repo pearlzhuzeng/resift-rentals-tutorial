@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 // Fetches
-import makeUpdateMovieFetch from 'fetches/makeUpdateMovieFetch';
+import makeUpdateMovie from 'fetches/makeUpdateMovie';
 import { useDispatch } from 'resift';
 
 // Styles
@@ -25,7 +25,7 @@ function MovieForm({ movie }) {
   const { id, name, synopsis } = draftMovie;
   const open = !!useRouteMatch('/movies/:movieId/edit');
   const history = useHistory();
-  const updateMovieFetch = makeUpdateMovieFetch(id);
+  const updateMovieFetch = makeUpdateMovie(id);
   const dispatch = useDispatch();
 
   const handleChangeName = e => {

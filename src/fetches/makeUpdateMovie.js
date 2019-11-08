@@ -1,12 +1,11 @@
 import { defineFetch } from 'resift';
 
-const makeUpdateMovieFetch = defineFetch({
+const makeUpdateMovie = defineFetch({
   displayName: 'Update Movie',
   share: {
     namespace: 'movie',
   },
   make: movieId => ({
-    key: [movieId],
     // updatedMovie needs to be passed in as data to the PUT call.
     request: updatedMovie => ({ http }) =>
       http({
@@ -16,4 +15,4 @@ const makeUpdateMovieFetch = defineFetch({
       }),
   }),
 });
-export default makeUpdateMovieFetch;
+export default makeUpdateMovie;
