@@ -25,10 +25,6 @@ function MovieThumbnail({ className, movie }) {
   const classes = useStyles();
   const { id, name, imageUrl } = movie;
 
-  if (!id) {
-    console.log({ movie });
-    throw new Error('ahh');
-  }
   const getMovie = makeGetMovie(id);
   const movieData = useData(getMovie);
   const dispatch = useDispatch();

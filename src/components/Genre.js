@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 // Fetches
 import { Guard, useDispatch, useData, useStatus, isLoading } from 'resift';
 import makeGetMovies from 'fetches/makeGetMovies';
@@ -51,19 +51,23 @@ function Genre({ className, genre }) {
   const { id, name } = genre;
   const getMovies = makeGetMovies(id);
   const movies = useData(getMovies);
-  const status = useStatus(getMovies);
+  const status = useStatus(getMovies, { isolatedStatus: true });
   const dispatch = useDispatch();
-  const [isEnd, setIsEnd] = useState(false);
+
+  const isEnd = (() => {
+    if (!movies) return false;
+    const { pageSize, currentPageNumber, totalNumberOfPages } = movies.paginationMeta;
+    return (currentPageNumber + 1) * pageSize >= totalNumberOfPages;
+  })();
 
   useEffect(() => {
     dispatch(getMovies(0));
   }, [getMovies, dispatch]);
 
   const handleLoadMore = () => {
-    const { pageSize, currentPageNumber, totalNumberOfPages } = movies.paginationMeta;
-    if ((currentPageNumber + 1) * pageSize >= totalNumberOfPages) {
-      setIsEnd(true);
-    }
+    const { currentPageNumber } = movies.paginationMeta;
+
+    if (isEnd) return;
 
     dispatch(getMovies(currentPageNumber + 1));
   };

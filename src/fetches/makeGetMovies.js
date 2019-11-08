@@ -14,6 +14,27 @@ const makeGetMovies = defineFetch({
           paginationMeta: response.paginationMeta,
         };
       },
+      movie: (previousMovies, incomingMovie) => {
+        if (!previousMovies) return null;
+
+        const index = previousMovies.results.findIndex(movie => movie.id === incomingMovie.id);
+
+        if (index === -1) {
+          return previousMovies;
+        }
+
+        return {
+          ...previousMovies,
+          results: [
+            ...previousMovies.results.slice(0, index),
+            {
+              ...previousMovies.results[index],
+              name: incomingMovie.name,
+            },
+            ...previousMovies.results.slice(index + 1, previousMovies.results.length),
+          ],
+        };
+      },
     },
   },
   make: genreId => ({
