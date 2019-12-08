@@ -13,11 +13,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import { CircularProgress } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
-  root: {
-    backgroundColor: '#212121',
-  },
+  root: {},
   genre: {
-    margin: '8px 0',
+    margin: '24px 0',
   },
   spinner: {
     color: 'white',
