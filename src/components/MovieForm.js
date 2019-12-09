@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 // Fetches
-import makeUpdateMovie from 'fetches/makeUpdateMovie';
 import { useDispatch, isLoading, useStatus } from 'resift';
+import makeUpdateMovie from 'fetches/makeUpdateMovie';
 // Styles
 import {
   Button,

@@ -65,9 +65,8 @@ function MovieDrawer() {
   const status = useStatus(getMovie);
 
   useEffect(() => {
-    // Don't fetch if the data is already there
     if (!getMovie) return;
-    if (isNormal(status)) return;
+    if (isNormal(status)) return; // Don't fetch if the data is already there
 
     dispatch(getMovie());
   }, [getMovie, dispatch, status]);
